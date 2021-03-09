@@ -21,11 +21,26 @@ class log_reg():
         J = 1/m*-np.dot(y.T,np.log(h)-np.dot((1-y).T,np.log(1-h)))
         return J
 
+    def gradientDesc(self,alpha,epochs,testing=False):
+        theta = self.theta
+        x = self.trainDataX
+        y = self.trainDataY
+        m = self.trainDataY.shape[0]
+
+        
+        for i in range(epochs):
+            yhat = self.predict(x,theta)
+            #print(yhat.shape)
+            delta = np.add(yhat,-y) #nx1
+            ddJ = np.dot(x.T,delta) #1xn nx2
+            theta = theta - alpha/m*ddJ
+        return theta
+
     def graph(self):
         theta = self.theta.copy()
         max = 100
         min = -100
-        incr = 1
+        incr = .5
         x = np.zeros(int((max-min)/incr)**2)
         y = np.zeros(int((max-min)/incr)**2)
         z = np.zeros(int((max-min)/incr)**2)
@@ -48,4 +63,6 @@ if __name__=='__main__':
     l = log_reg(x,y)
 
     a = l.cost(x,l.theta)
-    b = (l.graph())
+    #sb = (l.graph())
+    c = l.gradientDesc(.05,1000)
+    print(c)
